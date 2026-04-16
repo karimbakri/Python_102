@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python 102 — Course Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --accent: #f97316;
+    --accent2: #3b82f6;
+    --accent3: #10b981;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --border: #1e2d45;
+    --py-yellow: #fbbf24;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* BG grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HEADER */
+  .header {
+    margin-bottom: 56px;
+    animation: fadeDown 0.7s ease both;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(249,115,22,0.12);
+    border: 1px solid rgba(249,115,22,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    padding: 6px 14px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+  }
+
+  .badge::before {
+    content: '🐍';
+    font-size: 13px;
+  }
+
+  h1 {
+    font-size: clamp(40px, 8vw, 72px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 12px;
+  }
+
+  h1 span.num {
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+  }
+
+  h1 span.word {
+    color: var(--text);
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 16px;
+    font-weight: 400;
+    max-width: 480px;
+    line-height: 1.6;
+  }
+
+  /* STATS ROW */
+  .stats {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin: 32px 0 0;
+  }
+
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .stat-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--py-yellow);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* TIMELINE */
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 31px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2), var(--accent3));
+    opacity: 0.3;
+    border-radius: 2px;
+  }
+
+  .session {
+    display: flex;
+    gap: 24px;
+    padding: 0 0 32px;
+    animation: fadeUp 0.5s ease both;
+    cursor: pointer;
+  }
+
+  .session:nth-child(1) { animation-delay: 0.1s; }
+  .session:nth-child(2) { animation-delay: 0.2s; }
+  .session:nth-child(3) { animation-delay: 0.3s; }
+  .session:nth-child(4) { animation-delay: 0.4s; }
+  .session:nth-child(5) { animation-delay: 0.5s; }
+  .session:nth-child(6) { animation-delay: 0.6s; }
+  .session:nth-child(7) { animation-delay: 0.7s; }
+
+  .session-dot {
+    flex-shrink: 0;
+    width: 64px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding-top: 18px;
+  }
+
+  .dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    background: var(--bg);
+    position: relative;
+    z-index: 1;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+
+  .session:hover .dot,
+  .session.open .dot {
+    background: var(--accent);
+    box-shadow: 0 0 16px rgba(249,115,22,0.5);
+    transform: scale(1.3);
+  }
+
+  .session-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  .session-card {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .session:hover .session-card,
+  .session.open .session-card {
+    border-color: rgba(249,115,22,0.35);
+    box-shadow: 0 4px 24px rgba(249,115,22,0.08);
+  }
+
+  .session-header {
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .session-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .session-meta {
+    flex: 1;
+  }
+
+  .session-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .session-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+  }
+
+  .tag-blue { background: rgba(59,130,246,0.15); color: #93c5fd; }
+  .tag-green { background: rgba(16,185,129,0.15); color: #6ee7b7; }
+  .tag-orange { background: rgba(249,115,22,0.15); color: #fdba74; }
+  .tag-purple { background: rgba(139,92,246,0.15); color: #c4b5fd; }
+  .tag-pink { background: rgba(236,72,153,0.15); color: #f9a8d4; }
+
+  .expand-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+
+  .session:hover .expand-btn {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .session.open .expand-btn {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+    transform: rotate(45deg);
+  }
+
+  /* BODY */
+  .session-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+  }
+
+  .session.open .session-body {
+    max-height: 600px;
+  }
+
+  .session-body-inner {
+    padding: 0 24px 24px;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+  }
+
+  .topics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .topic-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: #94a3b8;
+    line-height: 1.4;
+  }
+
+  .topic-item::before {
+    content: '▸';
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-size: 10px;
+  }
+
+  .project-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent3);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-top: 4px;
+  }
+
+  .project-label {
+    font-size: 10px;
+    font-family: 'Space Mono', monospace;
+    color: var(--accent3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .project-title {
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  /* FOOTER */
+  .footer-section {
+    margin-top: 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    animation: fadeUp 0.7s ease 0.8s both;
+  }
+
+  .footer-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+
+  .footer-card h3 {
+    font-size: 13px;
+    font-family: 'Space Mono', monospace;
+    color: var(--accent2);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .footer-card ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .footer-card li {
+    font-size: 13px;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .footer-card li::before {
+    content: '✓';
+    color: var(--accent3);
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .progress-bar-wrap {
+    background: var(--surface2);
+    border-radius: 4px;
+    height: 6px;
+    margin-top: 16px;
+    overflow: hidden;
+  }
+
+  .progress-bar {
+    height: 100%;
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--py-yellow));
+    animation: growBar 1.5s ease 0.9s both;
+    transform-origin: left;
+  }
+
+  @keyframes growBar {
+    from { width: 0; }
+    to { width: 100%; }
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 600px) {
+    .topics-grid { grid-template-columns: 1fr; }
+    .footer-section { grid-template-columns: 1fr; }
+    .stats { gap: 10px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="badge">COURSE PLAN · INTERMEDIATE LEVEL</div>
+    <h1>
+      <span class="word">Python</span><br>
+      <span class="num">102</span>
+    </h1>
+    <p class="subtitle">A step up from the foundations — covering real-world patterns, data structures, OOP, APIs, and more.</p>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-val">7</div>
+        <div class="stat-label">Sessions</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val">14h</div>
+        <div class="stat-label">Total Hours</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val">2h</div>
+        <div class="stat-label">Per Session</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val">7</div>
+        <div class="stat-label">Mini Projects</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SESSIONS -->
+  <div class="timeline" id="timeline">
+
+    <!-- SESSION 1 -->
+    <div class="session" onclick="toggle(this)">
+      <div class="session-dot">
+        <div class="dot"></div>
+        <div class="session-num">S01</div>
+      </div>
+      <div class="session-card">
+        <div class="session-header">
+          <div class="session-icon" style="background:rgba(251,191,36,0.12);">🔁</div>
+          <div class="session-meta">
+            <div class="session-title">Python Refresher & Advanced Unpacking</div>
+            <div class="session-tags">
+              <span class="tag tag-orange">Comprehensions</span>
+              <span class="tag tag-blue">Unpacking</span>
+              <span class="tag tag-green">Itertools</span>
+            </div>
+          </div>
+          <div class="expand-btn">+</div>
+        </div>
+        <div class="session-body">
+          <div class="session-body-inner">
+            <div class="topics-grid">
+              <div class="topic-item">Quick review of Python 101 essentials</div>
+              <div class="topic-item">Advanced list, dict & set comprehensions</div>
+              <div class="topic-item">Tuple unpacking & starred expressions</div>
+              <div class="topic-item">Walrus operator (<code>:=</code>)</div>
+              <div class="topic-item">itertools: chain, zip_longest, product</div>
+              <div class="topic-item">Generators & <code>yield</code> basics</div>
+            </div>
+            <div class="project-box">
+              <div class="project-label">⚡ Mini Project</div>
+              <div class="project-title">Word Frequency Analyzer — count, sort, and display word stats from a text file using comprehensions & itertools</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SESSION 2 -->
+    <div class="session" onclick="toggle(this)">
+      <div class="session-dot">
+        <div class="dot"></div>
+        <div class="session-num">S02</div>
+      </div>
+      <div class="session-card">
+        <div class="session-header">
+          <div class="session-icon" style="background:rgba(59,130,246,0.12);">🧱</div>
+          <div class="session-meta">
+            <div class="session-title">Object-Oriented Programming (OOP)</div>
+            <div class="session-tags">
+              <span class="tag tag-blue">Classes</span>
+              <span class="tag tag-purple">Inheritance</span>
+              <span class="tag tag-orange">Dunder Methods</span>
+            </div>
+          </div>
+          <div class="expand-btn">+</div>
+        </div>
+        <div class="session-body">
+          <div class="session-body-inner">
+            <div class="topics-grid">
+              <div class="topic-item">Classes, attributes & methods deep dive</div>
+              <div class="topic-item">Dunder/magic methods (<code>__str__</code>, <code>__repr__</code>, <code>__eq__</code>)</div>
+              <div class="topic-item">Inheritance & method overriding</div>
+              <div class="topic-item">@property, @classmethod, @staticmethod</div>
+              <div class="topic-item">Composition vs. Inheritance</div>
+              <div class="topic-item">Dataclasses introduction</div>
+            </div>
+            <div class="project-box">
+              <div class="project-label">⚡ Mini Project</div>
+              <div class="project-title">Library Book System — model Books, Members, and Loans using OOP with proper inheritance and dunder methods</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SESSION 3 -->
+    <div class="session" onclick="toggle(this)">
+      <div class="session-dot">
+        <div class="dot"></div>
+        <div class="session-num">S03</div>
+      </div>
+      <div class="session-card">
+        <div class="session-header">
+          <div class="session-icon" style="background:rgba(16,185,129,0.12);">⚙️</div>
+          <div class="session-meta">
+            <div class="session-title">Functional Programming & Decorators</div>
+            <div class="session-tags">
+              <span class="tag tag-green">Decorators</span>
+              <span class="tag tag-blue">Lambda</span>
+              <span class="tag tag-pink">Closures</span>
+            </div>
+          </div>
+          <div class="expand-btn">+</div>
+        </div>
+        <div class="session-body">
+          <div class="session-body-inner">
+            <div class="topics-grid">
+              <div class="topic-item">First-class functions & higher-order functions</div>
+              <div class="topic-item">map(), filter(), reduce()</div>
+              <div class="topic-item">Lambda functions in practice</div>
+              <div class="topic-item">Closures & scoping (LEGB rule)</div>
+              <div class="topic-item">Writing and stacking decorators</div>
+              <div class="topic-item">functools: lru_cache, partial, wraps</div>
+            </div>
+            <div class="project-box">
+              <div class="project-label">⚡ Mini Project</div>
+              <div class="project-title">Request Logger Decorator — build a decorator that logs function calls, execution time, and caches results automatically</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SESSION 4 -->
+    <div class="session" onclick="toggle(this)">
+      <div class="session-dot">
+        <div class="dot"></div>
+        <div class="session-num">S04</div>
+      </div>
+      <div class="session-card">
+        <div class="session-header">
+          <div class="session-icon" style="background:rgba(139,92,246,0.12);">📁</div>
+          <div class="session-meta">
+            <div class="session-title">File I/O, JSON & Error Handling</div>
+            <div class="session-tags">
+              <span class="tag tag-purple">File I/O</span>
+              <span class="tag tag-orange">Exceptions</span>
+              <span class="tag tag-blue">JSON/CSV</span>
+            </div>
+          </div>
+          <div class="expand-btn">+</div>
+        </div>
+        <div class="session-body">
+          <div class="session-body-inner">
+            <div class="topics-grid">
+              <div class="topic-item">Reading/writing files with context managers</div>
+              <div class="topic-item">Working with JSON & CSV data</div>
+              <div class="topic-item">Pathlib for modern file path handling</div>
+              <div class="topic-item">Custom exception classes</div>
+              <div class="topic-item">try/except/else/finally patterns</div>
+              <div class="topic-item">Logging module basics</div>
+            </div>
+            <div class="project-box">
+              <div class="project-label">⚡ Mini Project</div>
+              <div class="project-title">Personal Expense Tracker — read/write JSON records, handle corrupt data gracefully, and generate a summary report</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SESSION 5 -->
+    <div class="session" onclick="toggle(this)">
+      <div class="session-dot">
+        <div class="dot"></div>
+        <div class="session-num">S05</div>
+      </div>
+      <div class="session-card">
+        <div class="session-header">
+          <div class="session-icon" style="background:rgba(249,115,22,0.12);">🌐</div>
+          <div class="session-meta">
+            <div class="session-title">APIs, HTTP & Web Data</div>
+            <div class="session-tags">
+              <span class="tag tag-orange">Requests</span>
+              <span class="tag tag-green">REST APIs</span>
+              <span class="tag tag-blue">Web Scraping</span>
+            </div>
+          </div>
+          <div class="expand-btn">+</div>
+        </div>
+        <div class="session-body">
+          <div class="session-body-inner">
+            <div class="topics-grid">
+              <div class="topic-item">HTTP methods: GET, POST, PUT, DELETE</div>
+              <div class="topic-item">The <code>requests</code> library in depth</div>
+              <div class="topic-item">Parsing and navigating JSON responses</div>
+              <div class="topic-item">Headers, auth tokens & query params</div>
+              <div class="topic-item">Intro to web scraping with BeautifulSoup</div>
+              <div class="topic-item">Rate limiting, error codes & retries</div>
+            </div>
+            <div class="project-box">
+              <div class="project-label">⚡ Mini Project</div>
+              <div class="project-title">Weather Dashboard CLI — fetch live data from a public weather API and display formatted forecasts in the terminal</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SESSION 6 -->
+    <div class="session" onclick="toggle(this)">
+      <div class="session-dot">
+        <div class="dot"></div>
+        <div class="session-num">S06</div>
+      </div>
+      <div class="session-card">
+        <div class="session-header">
+          <div class="session-icon" style="background:rgba(236,72,153,0.12);">🗄️</div>
+          <div class="session-meta">
+            <div class="session-title">Databases & Data Handling with Python</div>
+            <div class="session-tags">
+              <span class="tag tag-pink">SQLite</span>
+              <span class="tag tag-green">Pandas</span>
+              <span class="tag tag-blue">SQL Basics</span>
+            </div>
+          </div>
+          <div class="expand-btn">+</div>
+        </div>
+        <div class="session-body">
+          <div class="session-body-inner">
+            <div class="topics-grid">
+              <div class="topic-item">SQLite with Python's <code>sqlite3</code> module</div>
+              <div class="topic-item">CRUD operations via Python</div>
+              <div class="topic-item">Introduction to Pandas DataFrames</div>
+              <div class="topic-item">Reading CSV/Excel files into Pandas</div>
+              <div class="topic-item">Data filtering, groupby & aggregation</div>
+              <div class="topic-item">Exporting results to JSON/CSV</div>
+            </div>
+            <div class="project-box">
+              <div class="project-label">⚡ Mini Project</div>
+              <div class="project-title">Student Grade Analyzer — store grades in SQLite, load into Pandas, compute stats, and export a summary report</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SESSION 7 -->
+    <div class="session" onclick="toggle(this)">
+      <div class="session-dot">
+        <div class="dot" style="border-color: var(--py-yellow);"></div>
+        <div class="session-num">S07</div>
+      </div>
+      <div class="session-card" style="border-color: rgba(251,191,36,0.25);">
+        <div class="session-header">
+          <div class="session-icon" style="background:rgba(251,191,36,0.12);">🚀</div>
+          <div class="session-meta">
+            <div class="session-title">Modules, Packaging & Capstone</div>
+            <div class="session-tags">
+              <span class="tag tag-orange">Modules</span>
+              <span class="tag tag-green">Virtual Envs</span>
+              <span class="tag tag-purple">Capstone</span>
+            </div>
+          </div>
+          <div class="expand-btn">+</div>
+        </div>
+        <div class="session-body">
+          <div class="session-body-inner">
+            <div class="topics-grid">
+              <div class="topic-item">Structuring Python projects & packages</div>
+              <div class="topic-item">Virtual environments & pip best practices</div>
+              <div class="topic-item">Writing reusable modules</div>
+              <div class="topic-item"><code>__init__.py</code>, relative imports</div>
+              <div class="topic-item">argparse for CLI tools</div>
+              <div class="topic-item">Intro to testing with pytest</div>
+            </div>
+            <div class="project-box" style="border-left-color: var(--py-yellow);">
+              <div class="project-label" style="color: var(--py-yellow);">🏆 Capstone Project</div>
+              <div class="project-title">CLI Data Tool — a packaged Python app that fetches API data, stores it in SQLite, processes it with Pandas, and outputs a formatted report</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER INFO -->
+  <div class="footer-section">
+    <div class="footer-card">
+      <h3>// Prerequisites</h3>
+      <ul>
+        <li>Python 101 or equivalent foundations</li>
+        <li>Comfortable with loops, functions & lists</li>
+        <li>Basic understanding of dicts & strings</li>
+        <li>Python 3.10+ installed</li>
+        <li>VS Code or PyCharm setup</li>
+      </ul>
+    </div>
+    <div class="footer-card">
+      <h3>// What You'll Build</h3>
+      <ul>
+        <li>7 progressive mini-projects</li>
+        <li>A fully packaged CLI application</li>
+        <li>Reusable decorators & utilities</li>
+        <li>API consumers & data pipelines</li>
+        <li>A personal portfolio of Python work</li>
+      </ul>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar"></div>
+      </div>
+      <div style="font-size:11px; color: var(--muted); margin-top:8px; font-family:'Space Mono',monospace;">COURSE COMPLETION TARGET: 14 HOURS</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function toggle(el) {
+    const isOpen = el.classList.contains('open');
+    document.querySelectorAll('.session.open').forEach(s => s.classList.remove('open'));
+    if (!isOpen) el.classList.add('open');
+  }
+</script>
+</body>
+</html>
