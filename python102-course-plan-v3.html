@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python 102 — Course Plan · Karim Bakri</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#07090f; --bg2:#0d1117; --bg3:#131a24; --bg4:#192130;
+  --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.12);
+  --text:#e8edf5; --text2:#8b97b0; --text3:#4a566b;
+  --blue:#3d5fe0; --blue2:#5577f5;
+  --blue-g:linear-gradient(135deg,#3d5fe0,#6b7ff7);
+  --gold:#f0b429; --green:#34d399; --red:#f87171;
+  --mono:'IBM Plex Mono',monospace; --nav-h:64px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;font-size:16px;line-height:1.6;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 80% 50% at 10% 0%,rgba(61,95,224,0.12) 0%,transparent 60%),
+             radial-gradient(ellipse 60% 40% at 90% 100%,rgba(61,95,224,0.08) 0%,transparent 55%);}
+
+/* ── NAV ── */
+.nav{position:sticky;top:0;z-index:100;height:var(--nav-h);background:rgba(7,9,15,0.88);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 32px;}
+.nav-inner{width:100%;max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:20px;}
+.nav-logo{display:flex;align-items:center;gap:14px;text-decoration:none;flex-shrink:0;}
+.nav-logo img{height:36px;width:auto;filter:brightness(1.05);}
+.nav-div{width:1px;height:26px;background:var(--border2);}
+.nav-course{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text2);}
+.nav-right{display:flex;align-items:center;gap:18px;}
+.nav-price-amount{font-family:var(--mono);font-size:18px;font-weight:600;color:var(--gold);}
+.btn-register{display:inline-flex;align-items:center;gap:8px;background:var(--blue-g);color:#fff;
+  font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;padding:10px 22px;border-radius:8px;
+  border:none;cursor:pointer;text-decoration:none;transition:all .2s;white-space:nowrap;
+  box-shadow:0 4px 20px rgba(61,95,224,0.35);}
+.btn-register:hover{transform:translateY(-1px);box-shadow:0 6px 28px rgba(61,95,224,0.5);filter:brightness(1.1);}
+
+/* ── HERO ── */
+.hero{position:relative;z-index:1;padding:80px 32px 60px;max-width:1100px;margin:0 auto;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:10px;background:rgba(61,95,224,0.1);
+  border:1px solid rgba(61,95,224,0.25);border-radius:100px;padding:5px 14px;
+  font-family:var(--mono);font-size:11px;font-weight:600;color:var(--blue2);
+  letter-spacing:.12em;text-transform:uppercase;margin-bottom:26px;}
+.hero-eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--blue2);animation:pulse 2s ease infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
+.hero h1{font-size:clamp(38px,6vw,72px);font-weight:800;line-height:1.05;letter-spacing:-.03em;color:var(--text);margin-bottom:8px;}
+.hero h1 em{font-style:normal;background:var(--blue-g);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-sub{font-size:clamp(15px,2vw,19px);color:var(--text2);max-width:580px;margin-bottom:36px;font-weight:400;}
+.hero-stats{display:flex;flex-wrap:wrap;gap:10px;}
+.stat-chip{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);
+  border-radius:8px;padding:9px 15px;font-size:13px;color:var(--text2);}
+.stat-chip strong{color:var(--text);font-weight:600;}
+
+/* ── LAYOUT ── */
+.page-body{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 32px 100px;
+  display:grid;grid-template-columns:1fr 340px;gap:40px;align-items:start;}
+.section-label{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--text3);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:linear-gradient(to right,var(--border),transparent);}
+
+/* ── SESSION CARDS ── */
+.session-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;
+  margin-bottom:12px;overflow:hidden;transition:border-color .2s,box-shadow .2s;cursor:pointer;}
+.session-card:hover{border-color:rgba(61,95,224,0.35);box-shadow:0 4px 30px rgba(61,95,224,0.08);}
+.session-card.open{border-color:rgba(61,95,224,0.3);}
+.session-header{display:flex;align-items:center;gap:14px;padding:17px 20px;user-select:none;}
+.session-num{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.1em;color:var(--blue2);
+  background:rgba(61,95,224,0.1);border:1px solid rgba(61,95,224,0.2);border-radius:6px;padding:4px 10px;flex-shrink:0;}
+.session-emoji{font-size:19px;flex-shrink:0;}
+.session-header-text{flex:1;}
+.session-title{font-size:15px;font-weight:700;color:var(--text);line-height:1.3;}
+.session-tagline{font-size:12.5px;color:var(--text2);margin-top:2px;}
+.session-dur{font-family:var(--mono);font-size:11px;color:var(--text3);flex-shrink:0;}
+.chevron{width:17px;height:17px;flex-shrink:0;color:var(--text3);transition:transform .25s;}
+.session-card.open .chevron{transform:rotate(180deg);}
+.session-body{display:none;padding:0 20px 20px;border-top:1px solid var(--border);animation:slideDown .2s ease;}
+@keyframes slideDown{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.session-card.open .session-body{display:block;}
+.topics-grid{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 16px;}
+.topic-tag{font-size:11.5px;font-weight:500;padding:3px 10px;border-radius:20px;background:var(--bg4);border:1px solid var(--border2);color:var(--text2);}
+.exercises-list{display:flex;flex-direction:column;gap:5px;margin-bottom:16px;}
+.ex-item{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--text2);}
+.ex-item::before{content:'';width:5px;height:5px;border-radius:50%;flex-shrink:0;background:var(--text3);}
+.ex-item.easy::before{background:var(--green);}
+.ex-item.med::before{background:var(--gold);}
+.ex-item.hard::before{background:var(--red);}
+.mini-project-box{background:linear-gradient(135deg,rgba(61,95,224,0.08),rgba(61,95,224,0.03));
+  border:1px solid rgba(61,95,224,0.2);border-radius:10px;padding:13px 15px;display:flex;gap:11px;align-items:flex-start;}
+.mp-icon{font-size:17px;flex-shrink:0;margin-top:1px;}
+.mp-label{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--blue2);margin-bottom:3px;}
+.mp-title{font-size:14px;font-weight:600;color:var(--text);}
+.mp-desc{font-size:12px;color:var(--text2);margin-top:3px;line-height:1.5;}
+
+/* ── SIDEBAR ── */
+.sidebar{position:sticky;top:calc(var(--nav-h) + 20px);}
+.enroll-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:18px;}
+.enroll-top{background:var(--blue-g);padding:26px 26px 22px;text-align:center;}
+.enroll-top-label{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:7px;}
+.enroll-price-big{font-size:58px;font-weight:800;color:#fff;line-height:1;letter-spacing:-.03em;}
+.enroll-price-big sup{font-size:22px;font-weight:600;vertical-align:top;margin-top:11px;opacity:.9;}
+.enroll-price-note{font-size:12.5px;color:rgba(255,255,255,0.65);margin-top:5px;}
+.enroll-body{padding:22px 26px;}
+.enroll-features{display:flex;flex-direction:column;gap:11px;margin-bottom:22px;}
+.enroll-feat{display:flex;align-items:flex-start;gap:9px;font-size:13px;color:var(--text2);line-height:1.5;}
+.enroll-feat::before{content:'✓';color:var(--green);font-weight:700;font-size:12px;flex-shrink:0;margin-top:2px;}
+.btn-enroll-big{display:block;width:100%;text-align:center;background:var(--blue-g);color:#fff;
+  font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;padding:14px 22px;border-radius:10px;
+  border:none;cursor:pointer;text-decoration:none;box-shadow:0 4px 24px rgba(61,95,224,0.4);
+  transition:all .2s;margin-bottom:10px;}
+.btn-enroll-big:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(61,95,224,0.55);filter:brightness(1.08);}
+.enroll-note{text-align:center;font-size:12px;color:var(--text3);}
+.enroll-note a{color:var(--blue2);text-decoration:none;}
+.enroll-note a:hover{text-decoration:underline;}
+.info-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:14px;}
+.info-card-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:13px;}
+.info-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:7px 0;border-bottom:1px solid var(--border);}
+.info-row:last-child{border-bottom:none;}
+.info-row-label{color:var(--text3);}
+.info-row-val{color:var(--text);font-weight:500;}
+.prereq-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:18px 20px;}
+.prereq-item{display:flex;gap:9px;align-items:flex-start;font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:9px;}
+.prereq-item:last-child{margin-bottom:0;}
+.prereq-item::before{content:'→';color:var(--blue2);flex-shrink:0;font-size:12px;margin-top:2px;}
+
+/* ── FOOTER ── */
+.footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:28px 32px;
+  max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.footer-left{display:flex;align-items:center;gap:12px;}
+.footer-left img{height:28px;width:auto;opacity:.65;}
+.footer-text{font-size:12.5px;color:var(--text3);}
+.footer-right{display:flex;align-items:center;gap:14px;}
+.footer-pill{font-family:var(--mono);font-size:10.5px;background:rgba(61,95,224,0.1);
+  border:1px solid rgba(61,95,224,0.2);color:var(--blue2);padding:4px 12px;border-radius:20px;}
+.wa-link{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--green);
+  text-decoration:none;border:1px solid rgba(52,211,153,0.25);border-radius:20px;
+  padding:4px 12px;background:rgba(52,211,153,0.06);transition:all .2s;}
+.wa-link:hover{background:rgba(52,211,153,0.12);border-color:rgba(52,211,153,0.4);}
+.wa-icon{width:14px;height:14px;fill:var(--green);}
+
+/* ── MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.75);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;
+  width:100%;max-width:460px;overflow:hidden;animation:modalIn .25s ease;}
+@keyframes modalIn{from{opacity:0;transform:scale(0.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-head{background:var(--blue-g);padding:28px 30px 24px;position:relative;}
+.modal-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.15);border:none;
+  color:#fff;cursor:pointer;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;
+  justify-content:center;font-size:16px;transition:background .15s;}
+.modal-close:hover{background:rgba(255,255,255,0.25);}
+.modal-head-label{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.18em;
+  text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:6px;}
+.modal-head-title{font-size:22px;font-weight:800;color:#fff;}
+.modal-head-price{font-size:14px;color:rgba(255,255,255,0.7);margin-top:4px;}
+.modal-body{padding:28px 30px;}
+.form-group{margin-bottom:18px;}
+.form-label{display:block;font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px;}
+.form-label span{color:var(--red);margin-left:2px;}
+.form-input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;
+  padding:12px 16px;font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);
+  outline:none;transition:border-color .2s;}
+.form-input:focus{border-color:var(--blue2);box-shadow:0 0 0 3px rgba(85,119,245,0.12);}
+.form-input::placeholder{color:var(--text3);}
+.form-input.error{border-color:var(--red);}
+.form-hint{font-size:12px;color:var(--text3);margin-top:5px;}
+.form-error{font-size:12px;color:var(--red);margin-top:5px;display:none;}
+.form-error.show{display:block;}
+.modal-divider{border:none;border-top:1px solid var(--border);margin:20px 0;}
+.checkout-summary{background:var(--bg3);border:1px solid var(--border);border-radius:10px;
+  padding:14px 16px;margin-bottom:20px;}
+.cs-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;}
+.cs-row:last-child{margin-bottom:0;padding-top:8px;border-top:1px solid var(--border);font-weight:700;}
+.cs-label{color:var(--text2);}
+.cs-val{color:var(--text);}
+.cs-val.gold{color:var(--gold);}
+.btn-checkout{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;
+  background:linear-gradient(135deg,#25d366,#128c4a);color:#fff;
+  font-family:'Outfit',sans-serif;font-size:16px;font-weight:700;padding:15px 22px;
+  border-radius:12px;border:none;cursor:pointer;transition:all .2s;
+  box-shadow:0 4px 20px rgba(37,211,102,0.35);}
+.btn-checkout:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(37,211,102,0.5);filter:brightness(1.05);}
+.btn-checkout svg{flex-shrink:0;}
+.checkout-note{text-align:center;font-size:12px;color:var(--text3);margin-top:10px;line-height:1.5;}
+
+@media(max-width:820px){
+  .page-body{grid-template-columns:1fr;}
+  .sidebar{position:static;}
+  .hero{padding:48px 20px 36px;}
+  .page-body{padding:0 20px 60px;}
+  .footer{padding:22px 20px;}
+}
+@media(max-width:520px){
+  .nav{padding:0 16px;}
+  .nav-course{display:none;}
+  .nav-div{display:none;}
+  .btn-register{font-size:13px;padding:9px 14px;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="nav-logo" href="#">
+      <img src="data:image/png;base64,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" alt="Karim Bakri">
+      <div class="nav-div"></div>
+      <span class="nav-course">Python 102</span>
+    </a>
+    <div class="nav-right">
+      <span class="nav-price-amount">$80</span>
+      <button class="btn-register" onclick="openModal()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+        Register Now
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">Intermediate Python · Online Course</div>
+  <h1>Python <em>102</em></h1>
+  <p class="hero-sub">Go from Python basics to building real, packaged programs — with OOP, APIs, databases, data analysis, and a full capstone project.</p>
+  <div class="hero-stats">
+    <div class="stat-chip">📅 <strong>8 Sessions</strong> &nbsp;weekly</div>
+    <div class="stat-chip">⏱ <strong>16 Hours</strong> &nbsp;total</div>
+    <div class="stat-chip">🧩 <strong>35+ Exercises</strong> &nbsp;with solutions</div>
+    <div class="stat-chip">🌐 <strong>100% Online</strong></div>
+    <div class="stat-chip">🏆 <strong>Capstone Project</strong> &nbsp;portfolio-ready</div>
+    <div class="stat-chip">💰 <strong>$80</strong> &nbsp;full course</div>
+  </div>
+</section>
+
+<!-- MAIN BODY -->
+<div class="page-body">
+
+  <!-- LEFT: Sessions -->
+  <div class="sessions-col">
+    <div class="section-label">Course Sessions</div>
+
+    <!-- S1 -->
+    <div class="session-card" onclick="toggle(this)">
+      <div class="session-header">
+        <span class="session-num">01</span><span class="session-emoji">🔁</span>
+        <div class="session-header-text">
+          <div class="session-title">Refresher &amp; Smarter Lists</div>
+          <div class="session-tagline">Comprehensions, zip, enumerate, generators</div>
+        </div>
+        <span class="session-dur">2h</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="session-body">
+        <div class="topics-grid">
+          <span class="topic-tag">List comprehensions</span><span class="topic-tag">Dict comprehensions</span>
+          <span class="topic-tag">Tuple unpacking</span><span class="topic-tag">zip()</span>
+          <span class="topic-tag">enumerate()</span><span class="topic-tag">sorted / max / min with key</span>
+          <span class="topic-tag">any() / all()</span><span class="topic-tag">Intro to generators</span>
+        </div>
+        <div class="exercises-list">
+          <div class="ex-item easy">Rewrite for-loops as comprehensions</div>
+          <div class="ex-item easy">Student score report with zip &amp; enumerate</div>
+          <div class="ex-item easy">Top &amp; bottom students with sorted/max/min</div>
+          <div class="ex-item med">Generator function for even numbers</div>
+          <div class="ex-item med">Word frequency counter with dict comp</div>
+        </div>
+        <div class="mini-project-box">
+          <span class="mp-icon">⚡</span>
+          <div><div class="mp-label">Mini Project</div><div class="mp-title">Student Grade Report</div>
+          <div class="mp-desc">Build a grade summary using comprehensions, zip, enumerate, and sorted — clean, readable Python.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S2 -->
+    <div class="session-card" onclick="toggle(this)">
+      <div class="session-header">
+        <span class="session-num">02</span><span class="session-emoji">🧱</span>
+        <div class="session-header-text">
+          <div class="session-title">OOP Basics</div>
+          <div class="session-tagline">Classes, inheritance, @property, @classmethod</div>
+        </div>
+        <span class="session-dur">2h</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="session-body">
+        <div class="topics-grid">
+          <span class="topic-tag">Classes &amp; instances</span><span class="topic-tag">__init__ &amp; __str__</span>
+          <span class="topic-tag">Instance vs class attributes</span><span class="topic-tag">Inheritance &amp; super()</span>
+          <span class="topic-tag">@property</span><span class="topic-tag">@classmethod</span><span class="topic-tag">isinstance()</span>
+        </div>
+        <div class="exercises-list">
+          <div class="ex-item easy">Build a Book class with checkout methods</div>
+          <div class="ex-item easy">Animal family with inheritance</div>
+          <div class="ex-item easy">Rectangle with @property and @classmethod</div>
+          <div class="ex-item med">Bank account with history tracking</div>
+          <div class="ex-item med">Library system with composition</div>
+        </div>
+        <div class="mini-project-box">
+          <span class="mp-icon">⚡</span>
+          <div><div class="mp-label">Mini Project</div><div class="mp-title">Library Management System</div>
+          <div class="mp-desc">Book, Member, and Library classes working together with checkout, return, and search.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S3 -->
+    <div class="session-card" onclick="toggle(this)">
+      <div class="session-header">
+        <span class="session-num">03</span><span class="session-emoji">⚙️</span>
+        <div class="session-header-text">
+          <div class="session-title">Functions as Tools</div>
+          <div class="session-tagline">map, filter, lambda, and one clear decorator</div>
+        </div>
+        <span class="session-dur">2h</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="session-body">
+        <div class="topics-grid">
+          <span class="topic-tag">Functions as values</span><span class="topic-tag">map() &amp; filter()</span>
+          <span class="topic-tag">lambda</span><span class="topic-tag">sorted() with key</span>
+          <span class="topic-tag">@timer decorator</span><span class="topic-tag">functools.wraps</span>
+          <span class="topic-tag">*args &amp; **kwargs</span>
+        </div>
+        <div class="exercises-list">
+          <div class="ex-item easy">Sort &amp; filter products with lambdas</div>
+          <div class="ex-item easy">Write apply_to_all(items, func)</div>
+          <div class="ex-item easy">Read and use the timer decorator</div>
+          <div class="ex-item med">Write a logging decorator from scratch</div>
+          <div class="ex-item med">Input validation decorator</div>
+        </div>
+        <div class="mini-project-box">
+          <span class="mp-icon">⚡</span>
+          <div><div class="mp-label">Mini Project</div><div class="mp-title">Decorator Toolkit</div>
+          <div class="mp-desc">Build @timer and @log_call decorators and apply them to functions from previous sessions.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S4 -->
+    <div class="session-card" onclick="toggle(this)">
+      <div class="session-header">
+        <span class="session-num">04</span><span class="session-emoji">📁</span>
+        <div class="session-header-text">
+          <div class="session-title">File I/O &amp; Error Handling</div>
+          <div class="session-tagline">Files, JSON, CSV, pathlib, try/except</div>
+        </div>
+        <span class="session-dur">2h</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="session-body">
+        <div class="topics-grid">
+          <span class="topic-tag">with open()</span><span class="topic-tag">pathlib</span>
+          <span class="topic-tag">json.load / dump</span><span class="topic-tag">csv.DictReader / DictWriter</span>
+          <span class="topic-tag">try / except / finally</span><span class="topic-tag">Custom exceptions</span>
+        </div>
+        <div class="exercises-list">
+          <div class="ex-item easy">Read CSV → write formatted JSON</div>
+          <div class="ex-item easy">Safe file reader with error handling</div>
+          <div class="ex-item med">Config loader with fallback defaults</div>
+          <div class="ex-item med">Custom ValidationError exception</div>
+          <div class="ex-item med">Expense tracker that persists to disk</div>
+        </div>
+        <div class="mini-project-box">
+          <span class="mp-icon">⚡</span>
+          <div><div class="mp-label">Mini Project</div><div class="mp-title">Personal Expense Tracker</div>
+          <div class="mp-desc">CLI app that saves/loads expenses from a JSON file with full error handling.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S5 -->
+    <div class="session-card" onclick="toggle(this)">
+      <div class="session-header">
+        <span class="session-num">05</span><span class="session-emoji">🌐</span>
+        <div class="session-header-text">
+          <div class="session-title">APIs &amp; Web Data</div>
+          <div class="session-tagline">HTTP requests, JSON responses, BeautifulSoup</div>
+        </div>
+        <span class="session-dur">2h</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="session-body">
+        <div class="topics-grid">
+          <span class="topic-tag">requests.get()</span><span class="topic-tag">Status codes</span>
+          <span class="topic-tag">response.json()</span><span class="topic-tag">Query parameters</span>
+          <span class="topic-tag">raise_for_status()</span><span class="topic-tag">POST requests</span>
+          <span class="topic-tag">BeautifulSoup intro</span><span class="topic-tag">API keys &amp; headers</span>
+        </div>
+        <div class="exercises-list">
+          <div class="ex-item easy">Fetch &amp; display user data from JSONPlaceholder</div>
+          <div class="ex-item easy">Weather checker for 3 cities (Open-Meteo)</div>
+          <div class="ex-item med">GitHub public repos ranked by stars</div>
+          <div class="ex-item med">Scrape quotes → save to JSON</div>
+          <div class="ex-item med">Reusable safe_get() wrapper function</div>
+        </div>
+        <div class="mini-project-box">
+          <span class="mp-icon">⚡</span>
+          <div><div class="mp-label">Mini Project</div><div class="mp-title">Weather Dashboard CLI</div>
+          <div class="mp-desc">Fetch 3-day forecasts for any city, cache results in JSON, handle all network errors.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S6 -->
+    <div class="session-card" onclick="toggle(this)">
+      <div class="session-header">
+        <span class="session-num">06</span><span class="session-emoji">🗄️</span>
+        <div class="session-header-text">
+          <div class="session-title">Databases &amp; Pandas</div>
+          <div class="session-tagline">SQLite CRUD, parameterized queries, DataFrames</div>
+        </div>
+        <span class="session-dur">2h</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="session-body">
+        <div class="topics-grid">
+          <span class="topic-tag">sqlite3</span><span class="topic-tag">CREATE / INSERT / SELECT</span>
+          <span class="topic-tag">Parameterized queries</span><span class="topic-tag">row_factory</span>
+          <span class="topic-tag">pd.read_csv()</span><span class="topic-tag">Filtering &amp; sorting</span>
+          <span class="topic-tag">groupby + agg</span><span class="topic-tag">pd.read_sql()</span>
+          <span class="topic-tag">to_csv()</span>
+        </div>
+        <div class="exercises-list">
+          <div class="ex-item easy">Contacts database with CRUD</div>
+          <div class="ex-item easy">Explore Titanic dataset with Pandas</div>
+          <div class="ex-item med">Sales summary report with groupby</div>
+          <div class="ex-item med">SQLite → Pandas bridge with pd.read_sql</div>
+          <div class="ex-item hard">Mini data pipeline: API → Pandas → CSV</div>
+        </div>
+        <div class="mini-project-box">
+          <span class="mp-icon">⚡</span>
+          <div><div class="mp-label">Mini Project</div><div class="mp-title">Student Grade Analyser</div>
+          <div class="mp-desc">Load grades from SQLite into Pandas, compute stats, export a formatted CSV report.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S7 -->
+    <div class="session-card" onclick="toggle(this)">
+      <div class="session-header">
+        <span class="session-num">07</span><span class="session-emoji">🚀</span>
+        <div class="session-header-text">
+          <div class="session-title">Modules, Packaging &amp; Testing</div>
+          <div class="session-tagline">venv, argparse, pytest, project structure</div>
+        </div>
+        <span class="session-dur">2h</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="session-body">
+        <div class="topics-grid">
+          <span class="topic-tag">Package structure</span><span class="topic-tag">__init__.py</span>
+          <span class="topic-tag">Relative imports</span><span class="topic-tag">venv &amp; pip</span>
+          <span class="topic-tag">requirements.txt</span><span class="topic-tag">argparse subcommands</span>
+          <span class="topic-tag">pytest basics</span><span class="topic-tag">.gitignore &amp; README</span>
+        </div>
+        <div class="exercises-list">
+          <div class="ex-item easy">Package the expense tracker into modules</div>
+          <div class="ex-item easy">Add CLI with argparse to weather tool</div>
+          <div class="ex-item med">Write 5 pytest tests for grade analyser</div>
+          <div class="ex-item easy">Set up capstone project environment</div>
+        </div>
+        <div class="mini-project-box">
+          <span class="mp-icon">⚡</span>
+          <div><div class="mp-label">Mini Project</div><div class="mp-title">Full Packaged CLI App</div>
+          <div class="mp-desc">Proper package structure, CLI, persistent data, API call, error handling, and pytest tests.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S8 — FINAL PROJECT -->
+    <div class="session-card" onclick="toggle(this)" style="border-color:rgba(240,180,41,0.25);">
+      <div class="session-header">
+        <span class="session-num" style="background:rgba(240,180,41,0.1);border-color:rgba(240,180,41,0.3);color:var(--gold);">08</span>
+        <span class="session-emoji">🏆</span>
+        <div class="session-header-text">
+          <div class="session-title">Final Project — Demo Day</div>
+          <div class="session-tagline">Present your capstone · Peer review · Certificate</div>
+        </div>
+        <span class="session-dur">2h</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="session-body">
+        <div class="topics-grid">
+          <span class="topic-tag" style="border-color:rgba(240,180,41,0.3);color:var(--gold)">Live demo</span>
+          <span class="topic-tag" style="border-color:rgba(240,180,41,0.3);color:var(--gold)">Code review</span>
+          <span class="topic-tag" style="border-color:rgba(240,180,41,0.3);color:var(--gold)">Peer feedback</span>
+          <span class="topic-tag" style="border-color:rgba(240,180,41,0.3);color:var(--gold)">Q&amp;A</span>
+          <span class="topic-tag" style="border-color:rgba(240,180,41,0.3);color:var(--gold)">Certificate</span>
+          <span class="topic-tag" style="border-color:rgba(240,180,41,0.3);color:var(--gold)">Next steps</span>
+        </div>
+        <div class="exercises-list">
+          <div class="ex-item easy">Each student presents their capstone project live</div>
+          <div class="ex-item easy">Demonstrate: CLI, data persistence, API, tests</div>
+          <div class="ex-item easy">Receive structured written feedback from instructor</div>
+          <div class="ex-item easy">Group code review — best patterns highlighted</div>
+        </div>
+        <div class="mini-project-box" style="border-color:rgba(240,180,41,0.3);background:linear-gradient(135deg,rgba(240,180,41,0.07),rgba(240,180,41,0.02));">
+          <span class="mp-icon">🎓</span>
+          <div>
+            <div class="mp-label" style="color:var(--gold)">Capstone Requirements</div>
+            <div class="mp-title">Your Python 102 Project</div>
+            <div class="mp-desc">A portfolio-ready Python program: proper package, CLI with argparse, persistent data, at least one API, full error handling, and 5+ pytest tests. Something you'd be proud to show on GitHub.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /sessions-col -->
+
+  <!-- RIGHT: Sidebar -->
+  <aside class="sidebar">
+    <div class="enroll-card" id="enroll">
+      <div class="enroll-top">
+        <div class="enroll-top-label">Course Fee</div>
+        <div class="enroll-price-big"><sup>$</sup>80</div>
+        <div class="enroll-price-note">One-time · Full access · All materials</div>
+      </div>
+      <div class="enroll-body">
+        <div class="enroll-features">
+          <div class="enroll-feat">8 live online sessions × 2 hours each</div>
+          <div class="enroll-feat">35+ exercises with full solutions</div>
+          <div class="enroll-feat">Instructor guide &amp; exercise guide access</div>
+          <div class="enroll-feat">Capstone project with written feedback</div>
+          <div class="enroll-feat">Certificate of completion</div>
+          <div class="enroll-feat">WhatsApp support group access</div>
+        </div>
+        <button class="btn-enroll-big" onclick="openModal()">Enroll — $80</button>
+        <div class="enroll-note">
+          Questions? Chat on
+          <a href="https://wa.me/+96171071893" target="_blank">WhatsApp</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-card-title">📋 Course Details</div>
+      <div class="info-row"><span class="info-row-label">Format</span><span class="info-row-val">100% Online</span></div>
+      <div class="info-row"><span class="info-row-label">Duration</span><span class="info-row-val">8 weeks · 16 hours</span></div>
+      <div class="info-row"><span class="info-row-label">Session length</span><span class="info-row-val">2 hours each</span></div>
+      <div class="info-row"><span class="info-row-label">Level</span><span class="info-row-val">Intermediate</span></div>
+      <div class="info-row"><span class="info-row-label">Language</span><span class="info-row-val">Python 3.10+</span></div>
+      <div class="info-row"><span class="info-row-label">Exercises</span><span class="info-row-val">35+ (with solutions)</span></div>
+      <div class="info-row"><span class="info-row-label">Certificate</span><span class="info-row-val">Yes</span></div>
+    </div>
+
+    <div class="prereq-card">
+      <div class="info-card-title">✅ Prerequisites</div>
+      <div class="prereq-item">You know variables, loops, and functions in Python</div>
+      <div class="prereq-item">You can write and run a basic Python script</div>
+      <div class="prereq-item">No OOP, decorators, or database experience needed</div>
+    </div>
+  </aside>
+
+</div><!-- /page-body -->
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-left">
+    <img src="data:image/png;base64,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" alt="Karim Bakri">
+    <span class="footer-text">Python 102 · Intermediate Online Course</span>
+  </div>
+  <div class="footer-right">
+    <a href="https://wa.me/+96171071893" target="_blank" class="wa-link">
+      <svg class="wa-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+      </svg>
+      +961 71 071 893
+    </a>
+    <span class="footer-pill">PY-102 · 8 Sessions · $80</span>
+  </div>
+</footer>
+
+<!-- REGISTRATION MODAL -->
+<div class="modal-overlay" id="modal" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-head">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-head-label">Course Registration</div>
+      <div class="modal-head-title">Python 102</div>
+      <div class="modal-head-price">8 sessions · Online · $80 one-time</div>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label" for="reg-name">Full Name <span>*</span></label>
+        <input class="form-input" id="reg-name" type="text" placeholder="e.g. Karim Bakri" autocomplete="name">
+        <div class="form-error" id="err-name">Please enter your full name.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="reg-phone">WhatsApp Number <span>*</span></label>
+        <input class="form-input" id="reg-phone" type="tel" placeholder="e.g. +961 71 000 000" autocomplete="tel">
+        <div class="form-hint">Include your country code — we'll contact you on WhatsApp.</div>
+        <div class="form-error" id="err-phone">Please enter a valid phone number.</div>
+      </div>
+
+      <hr class="modal-divider">
+
+      <div class="checkout-summary">
+        <div class="cs-row"><span class="cs-label">Python 102 — Full Course</span><span class="cs-val">$80</span></div>
+        <div class="cs-row"><span class="cs-label">Sessions</span><span class="cs-val">8 × 2h online</span></div>
+        <div class="cs-row"><span class="cs-label"><strong>Total due</strong></span><span class="cs-val gold"><strong>$80</strong></span></div>
+      </div>
+
+      <button class="btn-checkout" onclick="checkout()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+        </svg>
+        Checkout via WhatsApp
+      </button>
+      <div class="checkout-note">
+        You'll be redirected to WhatsApp to confirm your registration and complete payment with Karim directly.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggle(card) { card.classList.toggle('open'); }
+document.querySelector('.session-card').classList.add('open');
+
+function openModal() {
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => document.getElementById('reg-name').focus(), 100);
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+  // Clear errors
+  document.querySelectorAll('.form-error').forEach(e => e.classList.remove('show'));
+  document.querySelectorAll('.form-input').forEach(i => i.classList.remove('error'));
+}
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('modal')) closeModal();
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+function checkout() {
+  const nameInput  = document.getElementById('reg-name');
+  const phoneInput = document.getElementById('reg-phone');
+  const errName    = document.getElementById('err-name');
+  const errPhone   = document.getElementById('err-phone');
+
+  let valid = true;
+
+  // Validate name
+  const name = nameInput.value.trim();
+  if (!name || name.length < 2) {
+    nameInput.classList.add('error');
+    errName.classList.add('show');
+    valid = false;
+  } else {
+    nameInput.classList.remove('error');
+    errName.classList.remove('show');
+  }
+
+  // Validate phone
+  const phone = phoneInput.value.trim();
+  const phoneClean = phone.replace(/[\s\-\(\)]/g, '');
+  if (!phone || phoneClean.length < 7) {
+    phoneInput.classList.add('error');
+    errPhone.classList.add('show');
+    valid = false;
+  } else {
+    phoneInput.classList.remove('error');
+    errPhone.classList.remove('show');
+  }
+
+  if (!valid) return;
+
+  // Build WhatsApp message
+  const msg = encodeURIComponent(
+    "Hello Karim! I'd like to register for Python 102.\n\n" +
+    "👤 Name: " + name + "\n" +
+    "📱 Phone: " + phone + "\n\n" +
+    "💰 Course: Python 102 — $80\n" +
+    "Please confirm my registration and share payment details. Thank you!"
+  );
+
+  const waURL = "https://wa.me/+96171071893?text=" + msg;
+  window.open(waURL, '_blank');
+  closeModal();
+}
+</script>
+</body>
+</html>
